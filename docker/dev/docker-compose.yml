@@ -1,0 +1,33 @@
+services:
+  example-db-postgres:
+    container_name: db-postgres-container
+    networks: [backend]
+    # SEE version: https://hub.docker.com/_/postgres/
+    image: postgres:18.1-alpine3.23
+    ports: ["5432:5432"]
+    volumes:
+      - ./container-data/postgres:/data/postgres
+      - ./docker/sql/:/docker-entrypoint-initdb.d/
+    env_file: [./.postgres.env]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # Uncomment to enable web database-manage.
+  # example-db-pgadmin:
+  #   image: elestio/pgadmin:latest
+  #   container_name: pgadmin-container
+  #   networks: [backend]
+  #   env_file: [./.postgres-manager.env]
+  #   ports: ["8081:8081"]
+  #   volumes:
+  #     - ./pgadmin-servers.json:/pgadmin4/servers.json
+  #   depends_on:
+  #     - example-db-postgres
+
+networks:
+  backend:
+    name: example-network
