@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.springexample.java.dto.MessageDTO;
 
-
 @RestController
 @RequestMapping("/healthcheck")
 public class HealthcheckController {
